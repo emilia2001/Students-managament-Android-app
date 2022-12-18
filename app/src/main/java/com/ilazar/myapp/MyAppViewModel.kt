@@ -9,12 +9,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ilazar.myapp.core.TAG
 import com.ilazar.myapp.core.data.UserPreferences
 import com.ilazar.myapp.core.data.UserPreferencesRepository
-import com.ilazar.myapp.todo.data.ItemRepository
+import com.ilazar.myapp.todo.data.StudentRepository
 import kotlinx.coroutines.launch
 
 class MyAppViewModel(
     private val userPreferencesRepository: UserPreferencesRepository,
-    private val itemRepository: ItemRepository
+    private val studentRepository: StudentRepository
 ) :
     ViewModel() {
 
@@ -24,13 +24,13 @@ class MyAppViewModel(
 
     fun logout() {
         viewModelScope.launch {
-            itemRepository.deleteAll()
+            studentRepository.deleteAll()
             userPreferencesRepository.save(UserPreferences())
         }
     }
 
     fun setToken(token: String) {
-        itemRepository.setToken(token)
+        studentRepository.setToken(token)
     }
 
     companion object {
@@ -40,7 +40,7 @@ class MyAppViewModel(
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MyApplication)
                 MyAppViewModel(
                     app.container.userPreferencesRepository,
-                    app.container.itemRepository
+                    app.container.studentRepository
                 )
             }
         }

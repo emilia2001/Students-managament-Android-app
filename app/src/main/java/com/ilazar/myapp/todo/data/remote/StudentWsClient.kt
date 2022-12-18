@@ -10,12 +10,12 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import okio.ByteString
 
-class ItemWsClient(private val okHttpClient: OkHttpClient) {
+class StudentWsClient(private val okHttpClient: OkHttpClient) {
 
     lateinit var webSocket: WebSocket
 
     suspend fun openSocket(
-        onEvent: (itemEvent: ItemEvent?) -> Unit,
+        onEvent: (studentEvent: StudentEvent?) -> Unit,
         onClosed: () -> Unit,
         onFailure: () -> Unit
     ) {
@@ -24,7 +24,7 @@ class ItemWsClient(private val okHttpClient: OkHttpClient) {
             val request = Request.Builder().url(Api.wsUrl).build()
             webSocket = okHttpClient.newWebSocket(
                 request,
-                ItemWebSocketListener(onEvent = onEvent, onClosed = onClosed, onFailure = onFailure)
+                StudentWebSocketListener(onEvent = onEvent, onClosed = onClosed, onFailure = onFailure)
             )
 //            okHttpClient.dispatcher.executorService.shutdown()
         }
@@ -48,14 +48,14 @@ class ItemWsClient(private val okHttpClient: OkHttpClient) {
         webSocket.send(auth)
     }
 
-    inner class ItemWebSocketListener(
-        private val onEvent: (itemEvent: ItemEvent?) -> Unit,
+    inner class StudentWebSocketListener(
+        private val onEvent: (studentEvent: StudentEvent?) -> Unit,
         private val onClosed: () -> Unit,
         private val onFailure: () -> Unit
     ) : WebSocketListener() {
         private val moshi = Moshi.Builder().build()
-        private val itemEventJsonAdapter: JsonAdapter<ItemEvent> =
-            moshi.adapter(ItemEvent::class.java)
+        private val studentEventJsonAdapter: JsonAdapter<StudentEvent> =
+            moshi.adapter(StudentEvent::class.java)
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
             Log.d(TAG, "onOpen")
@@ -63,8 +63,8 @@ class ItemWsClient(private val okHttpClient: OkHttpClient) {
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             Log.d(TAG, "onMessage string $text")
-            val itemEvent = itemEventJsonAdapter.fromJson(text)
-            onEvent(itemEvent)
+            val studentEvent = studentEventJsonAdapter.fromJson(text)
+            onEvent(studentEvent)
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {

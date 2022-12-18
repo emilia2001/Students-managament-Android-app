@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Log.d(TAG, "onCreate")
             MyApp {
-                MyAppNavHost()
+                MyAppNavHost(this)
             }
         }
     }
@@ -26,14 +26,14 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
-            (application as MyApplication).container.itemRepository.openWsClient()
+            (application as MyApplication).container.studentRepository.openWsClient()
         }
     }
 
     override fun onPause() {
         super.onPause()
         lifecycleScope.launch {
-            (application as MyApplication).container.itemRepository.closeWsClient()
+            (application as MyApplication).container.studentRepository.closeWsClient()
         }
     }
 }
@@ -48,10 +48,3 @@ fun MyApp(content: @Composable () -> Unit) {
     }
 }
 
-@Preview
-@Composable
-fun PreviewMyApp() {
-    MyApp {
-        MyAppNavHost()
-    }
-}

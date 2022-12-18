@@ -8,9 +8,9 @@ import com.ilazar.myapp.auth.data.AuthRepository
 import com.ilazar.myapp.auth.data.remote.AuthDataSource
 import com.ilazar.myapp.core.data.UserPreferencesRepository
 import com.ilazar.myapp.core.data.remote.Api
-import com.ilazar.myapp.todo.data.ItemRepository
-import com.ilazar.myapp.todo.data.remote.ItemService
-import com.ilazar.myapp.todo.data.remote.ItemWsClient
+import com.ilazar.myapp.todo.data.StudentRepository
+import com.ilazar.myapp.todo.data.remote.StudentService
+import com.ilazar.myapp.todo.data.remote.StudentWsClient
 
 val Context.userPreferencesDataStore by preferencesDataStore(
     name = "user_preferences"
@@ -21,14 +21,14 @@ class AppContainer(val context: Context) {
         Log.d(TAG, "init")
     }
 
-    private val itemService: ItemService = Api.retrofit.create(ItemService::class.java)
-    private val itemWsClient: ItemWsClient = ItemWsClient(Api.okHttpClient)
+    private val studentService: StudentService = Api.retrofit.create(StudentService::class.java)
+    private val studentWsClient: StudentWsClient = StudentWsClient(Api.okHttpClient)
     private val authDataSource: AuthDataSource = AuthDataSource()
 
     private val database: MyAppDatabase by lazy { MyAppDatabase.getDatabase(context) }
 
-    val itemRepository: ItemRepository by lazy {
-        ItemRepository(itemService, itemWsClient, database.itemDao())
+    val studentRepository: StudentRepository by lazy {
+        StudentRepository(studentService, studentWsClient, database.studentDao())
     }
 
     val authRepository: AuthRepository by lazy {

@@ -5,26 +5,26 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.ilazar.myapp.todo.data.Item
+import com.ilazar.myapp.todo.data.Student
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ItemDao {
-    @Query("SELECT * FROM Items")
-    fun getAll(): Flow<List<Item>>
+interface StudentDao {
+    @Query("SELECT * FROM Students")
+    fun getAll(): Flow<List<Student>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(item: Item)
+    suspend fun insert(student: Student)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(items: List<Item>)
+    suspend fun insert(students: List<Student>)
 
     @Update
-    suspend fun update(item: Item): Int
+    suspend fun update(student: Student): Int
 
-    @Query("DELETE FROM Items WHERE _id = :id")
+    @Query("DELETE FROM Students WHERE _id = :id")
     suspend fun deleteById(id: String): Int
 
-    @Query("DELETE FROM Items")
+    @Query("DELETE FROM Students")
     suspend fun deleteAll()
 }

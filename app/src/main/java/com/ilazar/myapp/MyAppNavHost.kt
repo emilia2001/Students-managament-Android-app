@@ -12,16 +12,16 @@ import androidx.navigation.navArgument
 import com.ilazar.myapp.auth.LoginScreen
 import com.ilazar.myapp.core.data.remote.Api
 import com.ilazar.myapp.core.ui.UserPreferencesViewModel
-import com.ilazar.myapp.todo.ui.ItemScreen
-import com.ilazar.myapp.todo.ui.items.ItemsScreen
+import com.ilazar.myapp.todo.ui.StudentScreen
+import com.ilazar.myapp.todo.ui.students.StudentsScreen
 
-val itemsRoute = "items"
+val studentsRoute = "students"
 val authRoute = "auth"
 
 @Composable
-fun MyAppNavHost() {
+fun MyAppNavHost(mainActivity: MainActivity) {
     val navController = rememberNavController()
-    val onCloseItem = {
+    val onCloseStudent = {
         Log.d("MyAppNavHost", "navigate back to list")
         navController.popBackStack()
     }
@@ -34,15 +34,15 @@ fun MyAppNavHost() {
         navController = navController,
         startDestination = authRoute
     ) {
-        composable(itemsRoute) {
-            ItemsScreen(
-                onItemClick = { itemId ->
-                    Log.d("MyAppNavHost", "navigate to item $itemId")
-                    navController.navigate("$itemsRoute/$itemId")
+        composable(studentsRoute) {
+            StudentsScreen(
+                onStudentClick = { studentId ->
+                    Log.d("MyAppNavHost", "navigate to student $studentId")
+                    navController.navigate("$studentsRoute/$studentId")
                 },
-                onAddItem = {
-                    Log.d("MyAppNavHost", "navigate to new item")
-                    navController.navigate("$itemsRoute-new")
+                onAddStudent = {
+                    Log.d("MyAppNavHost", "navigate to new student")
+                    navController.navigate("$studentsRoute-new")
                 },
                 onLogout = {
                     Log.d("MyAppNavHost", "logout")
@@ -55,20 +55,22 @@ fun MyAppNavHost() {
             )
         }
         composable(
-            route = "$itemsRoute/{id}",
+            route = "$studentsRoute/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         )
         {
-            ItemScreen(
-                itemId = it.arguments?.getString("id"),
-                onClose = { onCloseItem() }
+            StudentScreen(
+                studentId = it.arguments?.getString("id"),
+                onClose = { onCloseStudent() },
+                context = mainActivity
             )
         }
-        composable(route = "$itemsRoute-new")
+        composable(route = "$studentsRoute-new")
         {
-            ItemScreen(
-                itemId = null,
-                onClose = { onCloseItem() }
+            StudentScreen(
+                studentId = null,
+                onClose = { onCloseStudent() },
+                context = mainActivity
             )
         }
         composable(route = authRoute)
@@ -76,7 +78,7 @@ fun MyAppNavHost() {
             LoginScreen(
                 onClose = {
                     Log.d("MyAppNavHost", "navigate to list")
-                    navController.navigate(itemsRoute)
+                    navController.navigate(studentsRoute)
                 }
             )
         }
@@ -84,10 +86,10 @@ fun MyAppNavHost() {
 
     LaunchedEffect(userPreferencesUiState.token) {
         if (userPreferencesUiState.token.isNotEmpty()) {
-            Log.d("MyAppNavHost", "Lauched effect navigate to items")
+            Log.d("MyAppNavHost", "Lauched effect navigate to students")
             Api.tokenInterceptor.token = userPreferencesUiState.token
             myAppViewModel.setToken(userPreferencesUiState.token)
-            navController.navigate(itemsRoute) {
+            navController.navigate(studentsRoute) {
                 popUpTo(0)
             }
         }
