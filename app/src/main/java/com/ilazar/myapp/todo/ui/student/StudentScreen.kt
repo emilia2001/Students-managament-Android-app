@@ -19,6 +19,8 @@ import com.ilazar.myapp.R
 import com.ilazar.myapp.todo.ui.student.StudentViewModel
 import java.text.SimpleDateFormat
 import android.content.Context
+import com.ilazar.myapp.util.createNotificationChannel
+import com.ilazar.myapp.util.showSimpleNotification
 import java.util.*
 
 @Composable
@@ -35,7 +37,6 @@ fun StudentScreen(studentId: String?, onClose: () -> Unit, context: Context) {
             studentUiState.student?.scholarship ?: false
         )
     }
-
     Log.d(
         "StudentScreen",
         "recompose, firstName = $firstName, lastName = $lastName, birthDate = $birthDate, yearOfStudy = $yearOfStudy, scholarship = $scholarship"
@@ -74,6 +75,13 @@ fun StudentScreen(studentId: String?, onClose: () -> Unit, context: Context) {
                             "StudentScreen",
                             "save student firstName = $firstName lastName = $lastName"
                         );
+//                        showSimpleNotification(
+//                            context,
+//                            channelId,
+//                            notificationId,
+//                            "Save or update student",
+//                            "Changes were made for $firstName $lastName"
+//                        );
                         studentViewModel.saveOrUpdateStudent(
                             firstName,
                             lastName,

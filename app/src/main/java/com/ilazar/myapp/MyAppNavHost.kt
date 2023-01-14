@@ -3,6 +3,7 @@ package com.ilazar.myapp
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,6 +15,7 @@ import com.ilazar.myapp.core.data.remote.Api
 import com.ilazar.myapp.core.ui.UserPreferencesViewModel
 import com.ilazar.myapp.todo.ui.StudentScreen
 import com.ilazar.myapp.todo.ui.students.StudentsScreen
+import com.ilazar.myapp.util.createNotificationChannel
 
 val studentsRoute = "students"
 val authRoute = "auth"
@@ -29,6 +31,10 @@ fun MyAppNavHost(mainActivity: MainActivity) {
         viewModel<UserPreferencesViewModel>(factory = UserPreferencesViewModel.Factory)
     val userPreferencesUiState = userPreferencesViewModel.uiState
     val myAppViewModel = viewModel<MyAppViewModel>(factory = MyAppViewModel.Factory)
+
+    val context = LocalContext.current
+    val channelId = "MyTestChannel"
+    val notificationId = 0
 
     NavHost(
         navController = navController,
@@ -85,6 +91,7 @@ fun MyAppNavHost(mainActivity: MainActivity) {
     }
 
     LaunchedEffect(userPreferencesUiState.token) {
+        createNotificationChannel(channelId, context)
         if (userPreferencesUiState.token.isNotEmpty()) {
             Log.d("MyAppNavHost", "Lauched effect navigate to students")
             Api.tokenInterceptor.token = userPreferencesUiState.token

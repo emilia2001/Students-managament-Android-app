@@ -1,12 +1,11 @@
 package com.ilazar.myapp.todo.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ilazar.myapp.todo.data.Student
 import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface StudentDao {
