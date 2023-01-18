@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.ilazar.myapp.core.TAG
-import com.ilazar.myapp.todo.ui.MyNetworkStatus
 import com.ilazar.myapp.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
 

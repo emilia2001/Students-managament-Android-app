@@ -1,23 +1,19 @@
-package com.ilazar.myapp.todo.ui
+package com.ilazar.myapp.core
+
 
 import android.app.Application
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ilazar.myapp.util.ConnectivityManagerNetworkMonitor
 import kotlinx.coroutines.launch
 
-class MyNetworkStatusViewModel(application: Application) : AndroidViewModel(application) {
+class MyNetworkStatus(application: Application) : AndroidViewModel(application) {
     var uiState by mutableStateOf(false)
         private set
 
@@ -36,22 +32,8 @@ class MyNetworkStatusViewModel(application: Application) : AndroidViewModel(appl
     companion object {
         fun Factory(application: Application): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                MyNetworkStatusViewModel(application)
+                MyNetworkStatus(application)
             }
         }
     }
-}
-
-@Composable
-fun MyNetworkStatus() {
-    val myNewtworkStatusViewModel = viewModel<MyNetworkStatusViewModel>(
-        factory = MyNetworkStatusViewModel.Factory(
-            LocalContext.current.applicationContext as Application
-        )
-    )
-
-    Text(
-        "Is online: ${myNewtworkStatusViewModel.uiState}",
-        style = MaterialTheme.typography.h3,
-    )
 }

@@ -19,6 +19,7 @@ import com.ilazar.myapp.R
 import com.ilazar.myapp.todo.ui.student.StudentViewModel
 import java.text.SimpleDateFormat
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import com.ilazar.myapp.util.createNotificationChannel
 import com.ilazar.myapp.util.showSimpleNotification
 import java.util.*
@@ -64,6 +65,9 @@ fun StudentScreen(studentId: String?, onClose: () -> Unit, context: Context) {
             textInitialized = true
         }
     }
+    val channelId = "MyStudentChannel"
+    val notificationId = 0
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -75,13 +79,13 @@ fun StudentScreen(studentId: String?, onClose: () -> Unit, context: Context) {
                             "StudentScreen",
                             "save student firstName = $firstName lastName = $lastName"
                         );
-//                        showSimpleNotification(
-//                            context,
-//                            channelId,
-//                            notificationId,
-//                            "Save or update student",
-//                            "Changes were made for $firstName $lastName"
-//                        );
+                        showSimpleNotification(
+                            context,
+                            channelId,
+                            notificationId,
+                            "Save or update student",
+                            "Changes were made for $firstName $lastName"
+                        );
                         studentViewModel.saveOrUpdateStudent(
                             firstName,
                             lastName,

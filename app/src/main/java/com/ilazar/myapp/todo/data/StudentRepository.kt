@@ -1,6 +1,7 @@
 package com.ilazar.myapp.todo.data
 
 import android.util.Log
+import androidx.work.*
 import com.ilazar.myapp.core.TAG
 import com.ilazar.myapp.todo.data.local.StudentDao
 import com.ilazar.myapp.todo.data.remote.StudentEvent
@@ -74,19 +75,33 @@ class StudentRepository(
     }
 
     suspend fun update(student: Student): Student {
-        Log.d(TAG, "update $student...")
-        val updatedStudent = studentService.update(student._id, student)
-        Log.d(TAG, "update $student succeeded")
-        handleStudentUpdated(updatedStudent)
-        return updatedStudent
+        try {
+            Log.d(TAG, "update $student...")
+            val updatedStudent = studentService.update(student._id, student)
+            Log.d(TAG, "update $student succeeded")
+            handleStudentUpdated(updatedStudent)
+            return updatedStudent
+        } catch (e: Exception) {
+            Log.w(TAG, "update - failed", e)
+            handleStudentUpdated(student)
+            createWorker(student, "update")
+            return student
+        }
     }
 
     suspend fun save(student: Student): Student {
-        Log.d(TAG, "save $student...")
-        val createdStudent = studentService.create(student)
-        Log.d(TAG, "save $student succeeded")
-        handleStudentCreated(createdStudent)
-        return createdStudent
+        try {
+            Log.d(TAG, "save $student...")
+            val createdStudent = studentService.create(student)
+            Log.d(TAG, "save $student succeeded")
+            handleStudentCreated(createdStudent)
+            return createdStudent
+        } catch (e: Exception) {
+            Log.w(TAG, "save - failed", e)
+            handleStudentCreated(student)
+            createWorker(student, "save")
+            return student
+        }
     }
 
     private suspend fun handleStudentDeleted(student: Student) {
@@ -109,5 +124,32 @@ class StudentRepository(
 
     fun setToken(token: String) {
         studentWsClient.authorize(token)
+    }
+
+    fun createWorker(student: Student, operation: String) {
+        Log.d(TAG, "CREATE WORKER")
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        Log.d(TAG, "CREATE WORKER")
+
+        val inputData = Data.Builder()
+            .putString("operation", operation)
+            .putString("id", student._id)
+            .putString("firstName", student.firstName)
+            .putString("lastName", student.lastName)
+            .putString("birthDate", student.birthDate)
+            .putInt("yearOfStudy", student.yearOfStudy)
+            .putBoolean("scholarship", student.scholarship)
+            .build()
+
+        val myWork = OneTimeWorkRequest.Builder(Worker::class.java)
+            .setConstraints(constraints)
+            .setInputData(inputData)
+            .build()
+
+        WorkManager.getInstance().enqueue(myWork);
     }
 }
